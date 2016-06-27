@@ -13,5 +13,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextView = (TextView) findViewById(R.id.tv_main);
+//        新增了一个textview 控件
+//        文字显示为Git
+        mTextView.setText("git");
     }
 }
