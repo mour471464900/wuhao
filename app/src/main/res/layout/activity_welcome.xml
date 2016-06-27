@@ -2,11 +2,20 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.qianfeng.toplevel.WelcomeActivity">
-
+    android:layout_height="match_parent">
+  <ImageView
+      android:src="@mipmap/welcome"
+      android:scaleType="centerCrop"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+    <TextView
+        android:padding="10dp"
+        android:background="#66363636"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:text="欢迎使用美丽说"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </RelativeLayout>
