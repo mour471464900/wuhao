@@ -18,7 +18,5 @@ public class MainActivity extends AppCompatActivity {
 //        新增了一个textview 控件
 //        文字显示为Git
         mTextView.setText("git");
-//        增加一个button
-        button= (Button) findViewById(R.id.btn_check);
     }
 }
