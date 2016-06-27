@@ -19,6 +19,6 @@ public class MainActivity extends AppCompatActivity {
 //        文字显示为Git
         mTextView.setText("git");
 //       更新了button控件
-        button= (Button) findViewById(R.id.btn_check);
+        button = (Button) findViewById(R.id.btn_check);
     }
 }
