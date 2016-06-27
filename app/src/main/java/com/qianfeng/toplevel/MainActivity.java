@@ -2,11 +2,13 @@ package com.qianfeng.toplevel;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private TextView mTextView;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,5 +18,7 @@ public class MainActivity extends AppCompatActivity {
 //        新增了一个textview 控件
 //        文字显示为Git
         mTextView.setText("git");
+//        增加一个button
+        button= (Button) findViewById(R.id.btn_check);
     }
 }
