@@ -1,24 +1,67 @@
 package com.qianfeng.toplevel;
 
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
+import android.widget.TableLayout;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import com.qianfeng.toplevel.fragment.CullingFragment;
 
-    private TextView mTextView;
-    private Button button;
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+public class MainActivity extends AppCompatActivity {
+    @BindView(R.id.tl_main_top)
+     TableLayout mTableLayout;
+    @BindView(R.id.vp_main_content)
+    ViewPager mViewPager;
+
+    private  List<Fragment> fragmentList=new ArrayList<>();
+//    fragment de JIHE
+    private  List<String > titlsList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mTextView = (TextView) findViewById(R.id.tv_main);
-//        新增了一个textview 控件
-//        文字显示为Git
-        mTextView.setText("git");
-//       更新了button控件
-        button = (Button) findViewById(R.id.btn_check);
+        ButterKnife.bind(this);
+
+       initData();
+//    初始化数据源
+      initAdapter();
+//       初始化适配器
+        bindAdapter();
+//        绑定适配器
+    }
+
+    private void bindAdapter() {
+
+    }
+
+    private void initAdapter() {
+
+    }
+
+    private void initData() {
+          initFragment();
+//         初始化Fragment
+        initTableList();
+//       初始化tableLayout的上方的文字
+
+    }
+
+    private void initTableList() {
+
+    }
+
+    private void initFragment() {
+
+
     }
 }
