@@ -13,7 +13,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
 import com.qianfeng.toplevel.R;
+import com.qianfeng.toplevel.bean.ClassifyBean;
+import com.qianfeng.toplevel.utils.HttpUtil;
+import com.qianfeng.toplevel.utils.IRequestCallBack;
+import com.qianfeng.toplevel.utils.URLConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,14 +51,8 @@ public class GuideFragment extends Fragment {
 
         View view=inflater.inflate(R.layout.fragment_guide, container, false);
         ButterKnife.bind(this,view);
-
         initData();
 //    初始化数据源
-        initAdapter();
-//       初始化适配器
-        bindAdapter();
-//        绑定适配器
-        table.setupWithViewPager(mViewPager);
         return  view;
     }
     private void bindAdapter() {
@@ -65,19 +64,33 @@ public class GuideFragment extends Fragment {
     }
 
     private void initData() {
-        initFragment();
+        HttpUtil.requestGet(URLConstants.URL_BASE, new IRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson=new Gson();
+                ClassifyBean bean  =gson.fromJson(result, ClassifyBean.class);
+                ClassifyBean.DataEntity dataEntity=bean.getData();
+                List< ClassifyBean.DataEntity.ChannelsEntity > mlist=new ArrayList<>();
+                mlist.addAll(dataEntity.getChannels());
+                for (int i = 0; i <mlist.size() ; i++) {
+                    String title = mlist.get(i).getName();
+                    titlsList.add(title);
+                }
+                initFragment();
 //         初始化Fragment
-        initTableList();
+                initTableList();
 //       初始化tableLayout的上方的文字
+                initAdapter();
+//       初始化适配器
+                bindAdapter();
+//        绑定适配器
+                table.setupWithViewPager(mViewPager);
+            }
+        });
 
     }
 
     private void initTableList() {
-        titlsList.add("精选");
-        titlsList.add("海淘");
-        titlsList.add("送女票");
-        titlsList.add("创意生活");
-        titlsList.add("送基友");
         for (int i = 0; i < titlsList.size(); i++) {
             //创建Tab:mTabLayout.newTab()
             //设置Tab内容:tab.setText(内容);
@@ -87,22 +100,18 @@ public class GuideFragment extends Fragment {
 
     private void initFragment() {
         CullingFragment fragment1 = CullingFragment.newInstace(null);
-        OtherFragment fragment2 = OtherFragment.newInstance(null);
-        OtherFragment fragment3 = OtherFragment.newInstance(null);
-        OtherFragment fragment4 = OtherFragment.newInstance(null);
-        OtherFragment fragment5 = OtherFragment.newInstance(null);
         fragmentList.add(fragment1);
-        fragmentList.add(fragment2);
-        fragmentList.add(fragment3);
-        fragmentList.add(fragment4);
-        fragmentList.add(fragment5);
+//        从第二个位置开始
+        for (int i = 1; i <titlsList.size() ; i++) {
+            OtherFragment fragment=OtherFragment.newInstance(null);
+            fragmentList.add(fragment);
+        }
     }
 
     class MyViewPager extends FragmentStatePagerAdapter {
         public MyViewPager(FragmentManager fm) {
             super(fm);
         }
-
         @Override
         public Fragment getItem(int position) {
             return fragmentList.get(position);
@@ -113,7 +122,6 @@ public class GuideFragment extends Fragment {
         public int getCount() {
             return fragmentList==null ? 0 : fragmentList.size();
         }
-
         //        调加table上面的名字
         @Override
         public CharSequence getPageTitle(int position) {

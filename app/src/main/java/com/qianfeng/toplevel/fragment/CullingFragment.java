@@ -1,6 +1,8 @@
 package com.qianfeng.toplevel.fragment;
 
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -10,10 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.bigkoo.convenientbanner.ConvenientBanner;
+import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
+import com.bigkoo.convenientbanner.holder.Holder;
 import com.qianfeng.toplevel.R;
+import com.qianfeng.toplevel.utils.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +44,13 @@ public class CullingFragment extends Fragment {
     private List<String> groupNams = new ArrayList<>();
     private MyListViewAdapter adapter;
 
+    private ProgressDialog dialog;
+    private View hearderView;
+    private ConvenientBanner convenientBanner;
+    private View hearder2;
+    private HorizontalScrollView horizontalScrollView;
+//    初始化广告牌
+
     //   分组名称的集合
     //    静态工厂模式
     public static CullingFragment newInstace(Bundle args) {
@@ -54,13 +69,22 @@ public class CullingFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_culling, container, false);
         ButterKnife.bind(this, view);
+        hearderView = inflater.inflate(R.layout.listview_culling_hearder, null);
+//        找到头部视图
+        convenientBanner = (ConvenientBanner) hearderView.findViewById(R.id.cb_culling_top);
+        hearder2 = inflater.inflate(R.layout.listview_culling_scroll_hearder2,null);
+        horizontalScrollView= (HorizontalScrollView) hearder2.findViewById(R.id.sv_culling_hearder);
 //      初始化黄油刀的fragment
         initExpandListView();
 //        改变ExpandListView
+          mListView.addHeaderView(hearderView);
+          mListView.addHeaderView(hearder2);
         return view;
     }
 
     private void initExpandListView() {
+//        dialog = new ProgressDialog(getActivity());
+//        dialog.setMessage("小宝在偷懒~");
         initData();
 //        初始化数据源
         initAdapter();
@@ -78,8 +102,48 @@ public class CullingFragment extends Fragment {
         for (int i = 0; i < groupNams.size(); i++) {
             mListView.expandGroup(i);
         }
-
+//        setUpConvenientBanner();
     }
+
+
+    //    加载广告数据
+//    private void setUpConvenientBanner() {
+//        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
+//            @Override
+//            public NetworkImageHolderView createHolder() {
+//                return new NetworkImageHolderView();
+//            }
+//           }, urls)
+////                这个urls 是图片的地址的集合
+//                //设置需要切换的View
+//                .setPointViewVisible(true)    //设置指示器是否可见
+//                .setPageIndicator(new int[]{R.mipmap.iconoff, R.mipmap.iconon})   //设置指示器圆点
+//                .startTurning(5000)     //设置自动切换（同时设置了切换时间间隔）
+//                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT); //设置指示器位置（左、中、右）
+//    }
+//
+//    public class NetworkImageHolderView implements Holder<String> {
+//        private ImageView imageView;
+//        @Override
+//        public View createView(Context context) {
+//            //你可以通过layout文件来创建，也可以像我一样用代码创建，不一定是Image，任何控件都可以进行翻页
+//            imageView = new ImageView(context);
+//            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+//            imageView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                }
+//            });
+//            return imageView;
+//        }
+//
+//        @Override
+//        public void UpdateUI(Context context, int position, String data) {
+////            data 就是单个图片的地址
+//            ImageLoader.loadImage(context,data, imageView);
+//        }
+//
+//    }
 
     private void bindAdapter() {
         mListView.setAdapter(adapter);
@@ -90,6 +154,7 @@ public class CullingFragment extends Fragment {
     }
 
     private void initData() {
+//        dialog.show();
         if (groupNams != null && !groupNams.isEmpty()) {
             return;
         }
@@ -104,6 +169,7 @@ public class CullingFragment extends Fragment {
                 childData.add("第" + j + "章");
             }
         }
+
     }
 
     class MyListViewAdapter extends BaseExpandableListAdapter {
