@@ -93,6 +93,8 @@ public class CullingFragment extends Fragment {
         if (groupNams != null && !groupNams.isEmpty()) {
             return;
         }
+//       这个if循环是为了解决，数据重复加载的问题
+//       解决viewpager的数据重载的问题
         for (int i = 0; i < 10; i++) {
             String Group = "龙王传说" + i;
             groupNams.add(Group);
