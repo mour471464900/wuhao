@@ -2,24 +2,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-  >
+    >
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/holo_red_dark"
         android:padding="10dp"
         >
-        <ImageView
-            android:src="@mipmap/ic_launcher"
-            android:layout_width="35dp"
-            android:layout_height="35dp" />
         <TextView
-            android:id="@+id/tv_topName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="礼物说"
+            android:text="热门"
             android:layout_centerInParent="true"
             android:textColor="#ffffff"
             android:textSize="20sp"
@@ -33,19 +27,13 @@
             android:layout_centerVertical="true"
             />
     </RelativeLayout>
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tl_guide_top"
-        android:layout_width="match_parent"
-        app:tabIndicatorColor="@android:color/holo_red_dark"
-        app:tabIndicatorHeight="2dp"
-        android:layout_height="wrap_content"
-        android:fillViewport="false">
-    </android.support.design.widget.TabLayout>
-    <android.support.v4.view.ViewPager
-        android:layout_below="@+id/tl_guide_top"
-        android:layout_width="match_parent"
-        android:id="@+id/vp_guide_content"
-        android:layout_weight="1"
-        android:layout_height="0dp">
-    </android.support.v4.view.ViewPager>
+
+  <GridView
+      android:id="@+id/gd_hot"
+      android:layout_width="match_parent"
+      android:numColumns="2"
+      android:stretchMode="columnWidth"
+      android:layout_height="0dp"
+      android:layout_weight="1"
+      ></GridView>
 </LinearLayout>

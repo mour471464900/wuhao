@@ -31,7 +31,6 @@ public class CullingFragment extends Fragment {
     private View view;
     @BindView(R.id.expandLv_culling)
     ExpandableListView mListView;
-
     private Map< String ,List<String>> data=new HashMap<>();
 //    初始化数据源的 listView 的条目信息
    private List<String> groupNams =new ArrayList<>();
