@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.PagerAdapter;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,14 +15,21 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
+import com.google.gson.Gson;
 import com.qianfeng.toplevel.R;
+import com.qianfeng.toplevel.bean.FristAdvert;
+import com.qianfeng.toplevel.bean.SecondAdvert;
+import com.qianfeng.toplevel.utils.HttpUtil;
+import com.qianfeng.toplevel.utils.IRequestCallBack;
 import com.qianfeng.toplevel.utils.ImageLoader;
+import com.qianfeng.toplevel.utils.URLConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,16 +47,20 @@ public class CullingFragment extends Fragment {
     private View view;
     @BindView(R.id.expandLv_culling)
     ExpandableListView mListView;
+    //    头部的广告的
+    private List<String> fristUrls = new ArrayList<>();
+    //    中部广告的
+    private List<String> secondeUrls = new ArrayList<>();
     private Map<String, List<String>> data = new HashMap<>();
     //    初始化数据源的 listView 的条目信息
     private List<String> groupNams = new ArrayList<>();
     private MyListViewAdapter adapter;
-
     private ProgressDialog dialog;
     private View hearderView;
     private ConvenientBanner convenientBanner;
     private View hearder2;
     private HorizontalScrollView horizontalScrollView;
+    private LinearLayout linearLayout;
 //    初始化广告牌
 
     //   分组名称的集合
@@ -72,19 +84,19 @@ public class CullingFragment extends Fragment {
         hearderView = inflater.inflate(R.layout.listview_culling_hearder, null);
 //        找到头部视图
         convenientBanner = (ConvenientBanner) hearderView.findViewById(R.id.cb_culling_top);
-        hearder2 = inflater.inflate(R.layout.listview_culling_scroll_hearder2,null);
-        horizontalScrollView= (HorizontalScrollView) hearder2.findViewById(R.id.sv_culling_hearder);
+        hearder2 = inflater.inflate(R.layout.listview_culling_scroll_hearder2, null);
+        linearLayout = (LinearLayout) hearder2.findViewById(R.id.ll_culling_second_hearder);
 //      初始化黄油刀的fragment
         initExpandListView();
 //        改变ExpandListView
-          mListView.addHeaderView(hearderView);
-          mListView.addHeaderView(hearder2);
+        mListView.addHeaderView(hearderView);
+//        添加了
+        mListView.addHeaderView(hearder2);
         return view;
     }
 
     private void initExpandListView() {
-//        dialog = new ProgressDialog(getActivity());
-//        dialog.setMessage("小宝在偷懒~");
+
         initData();
 //        初始化数据源
         initAdapter();
@@ -102,48 +114,98 @@ public class CullingFragment extends Fragment {
         for (int i = 0; i < groupNams.size(); i++) {
             mListView.expandGroup(i);
         }
-//        setUpConvenientBanner();
+        initFirstCb();
+//        加载一栏的广告
+        initSecondCb();
+//        加载第二栏的广告
     }
 
+    private void initSecondCb() {
+        HttpUtil.requestGet(URLConstants.URL_SECONDCB, new IRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                SecondAdvert advert = gson.fromJson(result, SecondAdvert.class);
+                SecondAdvert.DataBean dataBean = advert.getData();
+                List<SecondAdvert.DataBean.SecondaryBannersBean> mlist = new ArrayList<>();
+                mlist.addAll(dataBean.getSecondary_banners());
+                for (int i = 0; i < mlist.size(); i++) {
+                    secondeUrls.add(mlist.get(i).getImage_url());
+                }
+                setUpSrclloView(secondeUrls);
+            }
+        });
+    }
 
-    //    加载广告数据
-//    private void setUpConvenientBanner() {
-//        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
-//            @Override
-//            public NetworkImageHolderView createHolder() {
-//                return new NetworkImageHolderView();
-//            }
-//           }, urls)
-////                这个urls 是图片的地址的集合
-//                //设置需要切换的View
-//                .setPointViewVisible(true)    //设置指示器是否可见
-//                .setPageIndicator(new int[]{R.mipmap.iconoff, R.mipmap.iconon})   //设置指示器圆点
-//                .startTurning(5000)     //设置自动切换（同时设置了切换时间间隔）
-//                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.ALIGN_PARENT_RIGHT); //设置指示器位置（左、中、右）
-//    }
-//
-//    public class NetworkImageHolderView implements Holder<String> {
-//        private ImageView imageView;
-//        @Override
-//        public View createView(Context context) {
-//            //你可以通过layout文件来创建，也可以像我一样用代码创建，不一定是Image，任何控件都可以进行翻页
-//            imageView = new ImageView(context);
-//            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-//            imageView.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                }
-//            });
-//            return imageView;
-//        }
-//
-//        @Override
-//        public void UpdateUI(Context context, int position, String data) {
-////            data 就是单个图片的地址
-//            ImageLoader.loadImage(context,data, imageView);
-//        }
-//
-//    }
+    private void setUpSrclloView(List<String> secondeUrls) {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        int width = display.getWidth() / 4;
+        int height = 250;
+        LinearLayout.LayoutParams
+                params = new LinearLayout.LayoutParams(width, height);
+        params.setMargins(15, 15, 0, 15);
+//        新建一个params来改变大小
+//          重写一个params 来改变图片的大小
+        for (int i = 0; i < secondeUrls.size(); i++) {
+            ImageView iv = new ImageView(getActivity());
+            iv.setScaleType(ImageView.ScaleType.FIT_XY);
+            iv.setLayoutParams(params);
+            ImageLoader.loadImage(getActivity(),secondeUrls.get(i), iv);
+            linearLayout.addView(iv);
+        }
+    }
+
+    private void initFirstCb() {
+        HttpUtil.requestGet(URLConstants.URL_FIRSTCB, new IRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                FristAdvert advert = gson.fromJson(result, FristAdvert.class);
+                FristAdvert.DataBean dataBean = advert.getData();
+                List<FristAdvert.DataBean.BannersBean> mlist = new ArrayList<>();
+                mlist.addAll(dataBean.getBanners());
+                for (int i = 0; i < mlist.size(); i++) {
+                    fristUrls.add(mlist.get(i).getImage_url());
+                }
+                setUpConvenientBanner();
+            }
+        });
+    }
+
+    //        加载广告数据
+    private void setUpConvenientBanner() {
+        convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
+            @Override
+            public NetworkImageHolderView createHolder() {
+                return new NetworkImageHolderView();
+            }
+        }, fristUrls)
+//                这个urls 是图片的地址的集合
+                //设置需要切换的View
+                .setPointViewVisible(true)    //设置指示器是否可见
+                .setPageIndicator(new int[]{R.mipmap.iconoff, R.mipmap.iconon})   //设置指示器圆点
+                .startTurning(3000)     //设置自动切换（同时设置了切换时间间隔）
+                .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL); //设置指示器位置（左、中、右）
+    }
+
+    public class NetworkImageHolderView implements Holder<String> {
+        private ImageView imageView;
+
+        @Override
+        public View createView(Context context) {
+            //你可以通过layout文件来创建，也可以像我一样用代码创建，不一定是Image，任何控件都可以进行翻页
+            imageView = new ImageView(context);
+            imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+            return imageView;
+        }
+
+        @Override
+        public void UpdateUI(Context context, int position, String data) {
+//            data 就是单个图片的地址
+            ImageLoader.loadImage(context, data, imageView);
+        }
+
+    }
 
     private void bindAdapter() {
         mListView.setAdapter(adapter);

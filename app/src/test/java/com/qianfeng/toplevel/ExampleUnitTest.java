@@ -2,6 +2,8 @@ package com.qianfeng.toplevel;
 
 import com.google.gson.Gson;
 import com.qianfeng.toplevel.bean.ClassifyBean;
+import com.qianfeng.toplevel.bean.FristAdvert;
+import com.qianfeng.toplevel.bean.SecondAdvert;
 import com.qianfeng.toplevel.utils.HttpUtilNow;
 import com.qianfeng.toplevel.utils.URLConstants;
 
@@ -20,19 +22,19 @@ public class ExampleUnitTest {
     public void addition_isCorrect() throws Exception {
         assertEquals(4, 2 + 2);
     }
+
     @Test
-    public void textOkHttpUtil()throws Exception {
-        String   name=   HttpUtilNow.get(URLConstants.URL_BASE);
-        Gson gson=new Gson();
-       ClassifyBean bean  =gson.fromJson(name, ClassifyBean.class);
-        ClassifyBean.DataEntity dataEntity=bean.getData();
-        List< ClassifyBean.DataEntity.ChannelsEntity > mlist=new ArrayList<>();
-         mlist.addAll(dataEntity.getChannels());
-        List<String > titles =new ArrayList<>();
-        for (int i = 0; i <mlist.size() ; i++) {
-            String title = mlist.get(i).getName();
-            titles.add(title);
+    public void textOkHttpUtil() throws Exception {
+        String name = HttpUtilNow.get(URLConstants.URL_SECONDCB);
+        Gson gson = new Gson();
+        SecondAdvert advert = gson.fromJson(name, SecondAdvert.class);
+        SecondAdvert.DataBean dataBean = advert.getData();
+        List<SecondAdvert.DataBean.SecondaryBannersBean> mlist = new ArrayList<>();
+        mlist.addAll(dataBean.getSecondary_banners());
+        List<String> imageurl = new ArrayList<>();
+        for (int i = 0; i < mlist.size(); i++) {
+            imageurl.add(mlist.get(i).getImage_url());
         }
-          System.out.println( titles);
+        System.out.println(imageurl);
     }
 }
