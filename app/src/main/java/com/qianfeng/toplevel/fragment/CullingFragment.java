@@ -31,9 +31,9 @@ public class CullingFragment extends Fragment {
     private View view;
     @BindView(R.id.expandLv_culling)
     ExpandableListView mListView;
-    private Map< String ,List<String>> data=new HashMap<>();
-//    初始化数据源的 listView 的条目信息
-   private List<String> groupNams =new ArrayList<>();
+    private Map<String, List<String>> data = new HashMap<>();
+    //    初始化数据源的 listView 的条目信息
+    private List<String> groupNams = new ArrayList<>();
     private MyListViewAdapter adapter;
 
     //   分组名称的集合
@@ -75,14 +75,14 @@ public class CullingFragment extends Fragment {
             }
         });
 //        让每个组都展开
-        for (int i = 0; i <groupNams.size() ; i++) {
+        for (int i = 0; i < groupNams.size(); i++) {
             mListView.expandGroup(i);
         }
 
     }
 
     private void bindAdapter() {
-     mListView.setAdapter(adapter);
+        mListView.setAdapter(adapter);
     }
 
     private void initAdapter() {
@@ -90,34 +90,38 @@ public class CullingFragment extends Fragment {
     }
 
     private void initData() {
-        for (int i = 0; i <10 ; i++) {
-            String Group="龙王传说"+i;
+        if (groupNams != null && !groupNams.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < 10; i++) {
+            String Group = "龙王传说" + i;
             groupNams.add(Group);
-            ArrayList<String >  childData=new ArrayList<>();
-            data.put(Group,childData);
-            for(int j=0;j<10;j++){
-                childData.add("第"+j+"章");
+            ArrayList<String> childData = new ArrayList<>();
+            data.put(Group, childData);
+            for (int j = 0; j < 10; j++) {
+                childData.add("第" + j + "章");
             }
         }
     }
 
-    class MyListViewAdapter extends BaseExpandableListAdapter{
+    class MyListViewAdapter extends BaseExpandableListAdapter {
 
-//        返回分组 数目的长度
+        //        返回分组 数目的长度
         @Override
         public int getGroupCount() {
-            return data==null ? 0 : groupNams.size();
-        }
-//      返回  每一个组的  子条目的长度
-        @Override
-        public int getChildrenCount(int groupPosition) {
-            String key= groupNams.get(groupPosition);
-//            得到组的 key
-            List<String> mList=data.get(key);
-            return mList==null ? 0 : mList.size();
+            return data == null ? 0 : groupNams.size();
         }
 
-//        返回每一组的数据
+        //      返回  每一个组的  子条目的长度
+        @Override
+        public int getChildrenCount(int groupPosition) {
+            String key = groupNams.get(groupPosition);
+//            得到组的 key
+            List<String> mList = data.get(key);
+            return mList == null ? 0 : mList.size();
+        }
+
+        //        返回每一组的数据
         @Override
         public Object getGroup(int groupPosition) {
             return groupNams.get(groupPosition);
@@ -142,7 +146,8 @@ public class CullingFragment extends Fragment {
         public boolean hasStableIds() {
             return false;
         }
-//     每一组的适配器
+
+        //     每一组的适配器
         @Override
         public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
             View view = convertView;
@@ -156,18 +161,21 @@ public class CullingFragment extends Fragment {
             groupViewHolder.mLeftTxt.setText(groupNams.get(groupPosition));
             return view;
         }
-//       每一组  holder View
+
+        //       每一组  holder View
         class GroupViewHolder {
             @BindView(R.id.tv_group_left)
             TextView mLeftTxt;
             @BindView(R.id.tv_group_right)
             TextView mRightTxt;
+
             public GroupViewHolder(View view) {
                 view.setTag(this);
-                ButterKnife.bind(this,view);
+                ButterKnife.bind(this, view);
             }
         }
-//     每一组的子 控件的适配器
+
+        //     每一组的子 控件的适配器
 //       如何加载子控件的数据
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
@@ -186,11 +194,13 @@ public class CullingFragment extends Fragment {
         class ChildViewHolder {
             @BindView(R.id.iv_child_show)
             ImageView mImageView;
+
             public ChildViewHolder(View view) {
                 view.setTag(this);
-                ButterKnife.bind(this,view);
+                ButterKnife.bind(this, view);
             }
         }
+
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
             return false;
