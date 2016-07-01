@@ -5,17 +5,8 @@
     android:layout_height="match_parent">
   <ImageView
       android:src="@mipmap/welcome"
-      android:scaleType="centerCrop"
+      android:scaleType="fitXY"
+      android:id="@+id/iv_welcome"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
-    <TextView
-        android:padding="10dp"
-        android:background="#66363636"
-        android:gravity="center_horizontal"
-        android:layout_alignParentBottom="true"
-        android:text="欢迎使用美丽说"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 </RelativeLayout>

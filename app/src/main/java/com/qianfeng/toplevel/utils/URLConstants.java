@@ -11,4 +11,8 @@ public class URLConstants {
     //       第一栏广告的数据
     public static final String URL_SECONDCB = "http://api.liwushuo.com/v2/secondary_banners?gender=1&generation=1";
 //          第二栏广告的数据
+
+    public static final String URL_CULLING = "http://api.liwushuo.com/v2/channels/101/items?gender=1&limit=20&offset=0&generation=2";
+//    精选的条目
+
 }

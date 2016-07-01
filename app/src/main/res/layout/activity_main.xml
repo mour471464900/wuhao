@@ -2,54 +2,71 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-   <FrameLayout
-       android:id="@+id/fl_main_content"
-       android:layout_width="match_parent"
-       android:layout_weight="1"
-       android:layout_height="0dp"/>
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/fl_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
     <RadioGroup
         android:id="@+id/rg_main"
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
+
         <RadioButton
             android:id="@+id/rb_guide"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
-            android:drawableTop="@drawable/slt_rb_libao"
-            android:checked="false" />
+            android:checked="false"
+            android:drawableTop="@drawable/slt_rb_zhinan"
+            android:gravity="center"
+            android:textColor="@color/rb_colro"
+            android:text="指南" />
         />
+
         <RadioButton
             android:id="@+id/rb_hot"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
-            android:drawableTop="@drawable/slt_rb_youxi"
-            android:checked="false" />
+            android:checked="false"
+            android:textColor="@color/rb_colro"
+            android:drawableTop="@drawable/slt_rb_iconhot"
+            android:gravity="center"
+            android:text="热门" />
         />
+
         <RadioButton
             android:id="@+id/rb_classify"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
-            android:drawableTop="@drawable/slt_rb_iconhot"
-            android:checked="false" />
+            android:checked="false"
+            android:textColor="@color/rb_colro"
+            android:drawableTop="@drawable/slt_rb_fenlei"
+            android:gravity="center"
+            android:text="分类" />
         />
+
         <RadioButton
             android:id="@+id/rb_my"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:button="@null"
-            android:drawableTop="@drawable/slt_rb_tese"
+            android:checked="false"
+            android:textColor="@color/rb_colro"
+            android:drawableTop="@drawable/slt_rb_my"
             android:gravity="center"
-            android:checked="false" />
+            android:text="我的" />
         />
     </RadioGroup>
 </LinearLayout>

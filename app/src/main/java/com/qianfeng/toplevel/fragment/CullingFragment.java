@@ -3,11 +3,13 @@ package com.qianfeng.toplevel.fragment;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerAdapter;
-import android.view.Display;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +18,26 @@ import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
+import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.qianfeng.toplevel.R;
+import com.qianfeng.toplevel.activity.BannerActivity;
+import com.qianfeng.toplevel.bean.CullingBean;
 import com.qianfeng.toplevel.bean.FristAdvert;
 import com.qianfeng.toplevel.bean.SecondAdvert;
 import com.qianfeng.toplevel.utils.HttpUtil;
 import com.qianfeng.toplevel.utils.IRequestCallBack;
-import com.qianfeng.toplevel.utils.ImageLoader;
 import com.qianfeng.toplevel.utils.URLConstants;
+import com.squareup.picasso.Picasso;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,12 +54,12 @@ public class CullingFragment extends Fragment {
     @BindView(R.id.expandLv_culling)
     ExpandableListView mListView;
     //    头部的广告的
-    private List<String> fristUrls = new ArrayList<>();
+    private List<String> fristUrls;
     //    中部广告的
-    private List<String> secondeUrls = new ArrayList<>();
-    private Map<String, List<String>> data = new HashMap<>();
+    private List<String> secondeUrls;
+    private Map<String, List<CullingBean.DataBean.ItemsBean>> map = new HashMap<>();
     //    初始化数据源的 listView 的条目信息
-    private List<String> groupNams = new ArrayList<>();
+    private List<String> dates = new ArrayList<>();
     private MyListViewAdapter adapter;
     private ProgressDialog dialog;
     private View hearderView;
@@ -61,6 +67,12 @@ public class CullingFragment extends Fragment {
     private View hearder2;
     private HorizontalScrollView horizontalScrollView;
     private LinearLayout linearLayout;
+    private RecyclerView recyclerView;
+    private MyRecylerAdapter myRecylerAdapter;
+    private List<FristAdvert.DataBean.BannersBean> firstBanner;
+    private List<SecondAdvert.DataBean.SecondaryBannersBean> secondList;
+    private List<CullingBean.DataBean.ItemsBean> itemsBeanList = new ArrayList<>();
+
 //    初始化广告牌
 
     //   分组名称的集合
@@ -85,14 +97,35 @@ public class CullingFragment extends Fragment {
 //        找到头部视图
         convenientBanner = (ConvenientBanner) hearderView.findViewById(R.id.cb_culling_top);
         hearder2 = inflater.inflate(R.layout.listview_culling_scroll_hearder2, null);
-        linearLayout = (LinearLayout) hearder2.findViewById(R.id.ll_culling_second_hearder);
+        recyclerView = (RecyclerView) hearder2.findViewById(R.id.recycler_culling_hearder);
 //      初始化黄油刀的fragment
         initExpandListView();
 //        改变ExpandListView
         mListView.addHeaderView(hearderView);
 //        添加了
         mListView.addHeaderView(hearder2);
+        initListener();
         return view;
+    }
+
+    private void initListener() {
+//        这是第一栏广告的鉴听事件
+        convenientBanner.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                FristAdvert.DataBean.BannersBean bannersBean = firstBanner.get(position);
+                Intent intent = new Intent(getActivity(), BannerActivity.class);
+                startActivity(intent);
+            }
+        });
+        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
+                String groupName = dates.get(groupPosition);
+                List<CullingBean.DataBean.ItemsBean> bean = map.get(groupName);
+                return true;
+            }
+        });
     }
 
     private void initExpandListView() {
@@ -102,77 +135,119 @@ public class CullingFragment extends Fragment {
         initAdapter();
 //        初始化适配器
         bindAdapter();
-//        绑定适配器
-//        设置ExpandListView 点击不收缩
-        mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-                return true;
-            }
-        });
-//        让每个组都展开
-        for (int i = 0; i < groupNams.size(); i++) {
-            mListView.expandGroup(i);
-        }
+//        绑定适配
         initFirstCb();
 //        加载一栏的广告
         initSecondCb();
 //        加载第二栏的广告
     }
 
+    //--------------------第二栏广告的数据--------------------
     private void initSecondCb() {
+        secondeUrls = new ArrayList<>();
+        secondList = new ArrayList<>();
         HttpUtil.requestGet(URLConstants.URL_SECONDCB, new IRequestCallBack() {
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
                 SecondAdvert advert = gson.fromJson(result, SecondAdvert.class);
                 SecondAdvert.DataBean dataBean = advert.getData();
-                List<SecondAdvert.DataBean.SecondaryBannersBean> mlist = new ArrayList<>();
-                mlist.addAll(dataBean.getSecondary_banners());
-                for (int i = 0; i < mlist.size(); i++) {
-                    secondeUrls.add(mlist.get(i).getImage_url());
+                secondList.addAll(dataBean.getSecondary_banners());
+                for (int i = 0; i < secondList.size(); i++) {
+                    secondeUrls.add(secondList.get(i).getImage_url());
                 }
-                setUpSrclloView(secondeUrls);
+
+                myRecylerAdapter.notifyDataSetChanged();
+                //                                设置ExpandListView 点击不收缩
+                mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                    @Override
+                    public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
+                        return true;
+                    }
+                });
+//        让每个组都展开
+                for (int i = 0; i < dates.size(); i++) {
+                    mListView.expandGroup(i);
+                }
             }
         });
+        setUpRecylerView();
     }
 
-    private void setUpSrclloView(List<String> secondeUrls) {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        int width = display.getWidth() / 4;
-        int height = 250;
-        LinearLayout.LayoutParams
-                params = new LinearLayout.LayoutParams(width, height);
-        params.setMargins(15, 15, 0, 15);
-//        新建一个params来改变大小
-//          重写一个params 来改变图片的大小
-        for (int i = 0; i < secondeUrls.size(); i++) {
-            ImageView iv = new ImageView(getActivity());
-            iv.setScaleType(ImageView.ScaleType.FIT_XY);
-            iv.setLayoutParams(params);
-            ImageLoader.loadImage(getActivity(),secondeUrls.get(i), iv);
-            linearLayout.addView(iv);
+    private void setUpRecylerView() {
+//        创建一个布局的管理器
+        LinearLayoutManager manager =
+                new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(manager);
+//        添加一个了布局管理器
+        myRecylerAdapter = new MyRecylerAdapter();
+        recyclerView.setAdapter(myRecylerAdapter);
+    }
+
+    //----------------
+    class HeardViewHodler extends RecyclerView.ViewHolder {
+        public ImageView imageView;
+
+        //      创建一个imageView
+        public HeardViewHodler(View itemView) {
+            super(itemView);
+            imageView = (ImageView) itemView.findViewById(R.id.iv_secondebanner_item);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+//                这是横向的recycleView的监听事件
+                public void onClick(View v) {
+                    try {
+                        int position = Integer.parseInt(v.getTag().toString());
+                        SecondAdvert.DataBean.SecondaryBannersBean secondaryBannersBean = secondList.get(position);
+                        Intent intent = new Intent(getActivity(), BannerActivity.class);
+                        startActivity(intent);
+                    } catch (NumberFormatException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
     }
 
+    class MyRecylerAdapter extends RecyclerView.Adapter<HeardViewHodler> {
+        @Override
+        public HeardViewHodler onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(getActivity()).inflate(R.layout.secondbanner_item, null);
+            return new HeardViewHodler(view);
+        }
+
+        @Override
+        public void onBindViewHolder(HeardViewHodler holder, int position) {
+            holder.imageView.setTag(position);
+            Picasso.with(getActivity()).load(secondeUrls.get(position)).into(holder.imageView);
+        }
+
+        @Override
+        public int getItemCount() {
+            return secondeUrls == null ? 0 : secondeUrls.size();
+        }
+    }
+
+
+    //-------------加载第一栏广告的--------------------------
     private void initFirstCb() {
+        fristUrls = new ArrayList<>();
+        firstBanner = new ArrayList<>();
         HttpUtil.requestGet(URLConstants.URL_FIRSTCB, new IRequestCallBack() {
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
                 FristAdvert advert = gson.fromJson(result, FristAdvert.class);
                 FristAdvert.DataBean dataBean = advert.getData();
-                List<FristAdvert.DataBean.BannersBean> mlist = new ArrayList<>();
-                mlist.addAll(dataBean.getBanners());
-                for (int i = 0; i < mlist.size(); i++) {
-                    fristUrls.add(mlist.get(i).getImage_url());
+                firstBanner.addAll(dataBean.getBanners());
+                for (int i = 0; i < firstBanner.size(); i++) {
+                    fristUrls.add(firstBanner.get(i).getImage_url());
                 }
                 setUpConvenientBanner();
             }
         });
     }
 
-    //        加载广告数据
     private void setUpConvenientBanner() {
         convenientBanner.setPages(new CBViewHolderCreator<NetworkImageHolderView>() {
             @Override
@@ -183,7 +258,8 @@ public class CullingFragment extends Fragment {
 //                这个urls 是图片的地址的集合
                 //设置需要切换的View
                 .setPointViewVisible(true)    //设置指示器是否可见
-                .setPageIndicator(new int[]{R.mipmap.iconoff, R.mipmap.iconon})   //设置指示器圆点
+                .setPageIndicator(new int[]{R.drawable.btn_check_disabled,
+                        R.drawable.btn_check_disabled_nightmode})   //设置指示器圆点
                 .startTurning(3000)     //设置自动切换（同时设置了切换时间间隔）
                 .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL); //设置指示器位置（左、中、右）
     }
@@ -201,12 +277,13 @@ public class CullingFragment extends Fragment {
 
         @Override
         public void UpdateUI(Context context, int position, String data) {
-//            data 就是单个图片的地址
-            ImageLoader.loadImage(context, data, imageView);
-        }
+//           map 就是单个图片的地址
+            Picasso.with(getActivity()).load(data).into(imageView);
 
+        }
     }
 
+    //---------------------下面是expandListView 的适配器--------------------
     private void bindAdapter() {
         mListView.setAdapter(adapter);
     }
@@ -216,45 +293,83 @@ public class CullingFragment extends Fragment {
     }
 
     private void initData() {
-//        dialog.show();
-        if (groupNams != null && !groupNams.isEmpty()) {
+
+        if (dates != null && !dates.isEmpty()) {
             return;
         }
 //       这个if循环是为了解决，数据重复加载的问题
 //       解决viewpager的数据重载的问题
-        for (int i = 0; i < 10; i++) {
-            String Group = "龙王传说" + i;
-            groupNams.add(Group);
-            ArrayList<String> childData = new ArrayList<>();
-            data.put(Group, childData);
-            for (int j = 0; j < 10; j++) {
-                childData.add("第" + j + "章");
+
+        HttpUtil.requestGet(URLConstants.URL_CULLING, new IRequestCallBack() {
+            @Override
+            public void onSuccess(String result) {
+                Gson gson = new Gson();
+                CullingBean advert = gson.fromJson(result, CullingBean.class);
+                CullingBean.DataBean data = advert.getData();
+                itemsBeanList.addAll(data.getItems());
+                setUpBottmBanner();
+                myRecylerAdapter.notifyDataSetChanged();
             }
-        }
+        });
 
     }
 
-    class MyListViewAdapter extends BaseExpandableListAdapter {
+    //    通过对象的集合，生成一个map，对象
+    private void setUpBottmBanner() {
+        List<CullingBean.DataBean.ItemsBean> list = new ArrayList<>();
+//        先重新new一集合
+        list.add(itemsBeanList.get(0));
+//        先有第一个先new一个list
+        String date = returnDate(itemsBeanList.get(0).getCreated_at());
+//        先有第一个date的数据
+        dates.add(date);
+        for (int i = 1; i < itemsBeanList.size(); i++) {
+            if (date.equals(returnDate(itemsBeanList.get(i).getCreated_at()))) {
+//                如果不是同一个星期就不断的加到就把bean对象加到list中去
+                list.add(itemsBeanList.get(i));
+//         如果第二个对象的data数据不等于
+            } else {
+                map.put(date, list);
+//
+                list.add(itemsBeanList.get(i));
+                date = returnDate(itemsBeanList.get(i).getCreated_at());
+//                当一个见
+                dates.add(date);
+                list = new ArrayList<>();
+                map.put(date, list);
+            }
+        }
+    }
 
+    //   这是将毫秒转换成日期的方法
+    private String returnDate(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd E");
+        String now = sdf.format(new Date(time * 1000));
+        return now;
+    }
+
+
+    //-------------------------这是expandlistview 的适配器----------------------------
+    class MyListViewAdapter extends BaseExpandableListAdapter {
         //        返回分组 数目的长度
         @Override
         public int getGroupCount() {
-            return data == null ? 0 : groupNams.size();
+            return map == null ? 0 : dates.size();
         }
 
         //      返回  每一个组的  子条目的长度
         @Override
         public int getChildrenCount(int groupPosition) {
-            String key = groupNams.get(groupPosition);
+            String key = dates.get(groupPosition);
 //            得到组的 key
-            List<String> mList = data.get(key);
-            return mList == null ? 0 : mList.size();
+            List<CullingBean.DataBean.ItemsBean> childList = map.get(key);
+            return childList == null ? 0 : childList.size();
         }
 
         //        返回每一组的数据
         @Override
         public Object getGroup(int groupPosition) {
-            return groupNams.get(groupPosition);
+            return dates.get(groupPosition);
         }
 
         @Override
@@ -288,7 +403,7 @@ public class CullingFragment extends Fragment {
             } else {
                 groupViewHolder = (GroupViewHolder) view.getTag();
             }
-            groupViewHolder.mLeftTxt.setText(groupNams.get(groupPosition));
+            groupViewHolder.mLeftTxt.setText(dates.get(groupPosition));
             return view;
         }
 
@@ -296,8 +411,6 @@ public class CullingFragment extends Fragment {
         class GroupViewHolder {
             @BindView(R.id.tv_group_left)
             TextView mLeftTxt;
-            @BindView(R.id.tv_group_right)
-            TextView mRightTxt;
 
             public GroupViewHolder(View view) {
                 view.setTag(this);
@@ -317,14 +430,22 @@ public class CullingFragment extends Fragment {
             } else {
                 childViewHolder = (ChildViewHolder) view.getTag();
             }
-            childViewHolder.mImageView.setImageResource(R.mipmap.zhangyuqi2);
+//            通过组名来得到，当前集合位置的
+            String groupName = dates.get(groupPosition);
+            List<CullingBean.DataBean.ItemsBean> bean = map.get(groupName);
+            Picasso.with(getActivity()).load(bean.get(childPosition).getCover_image_url()).
+                    into(childViewHolder.mImageView);
+//               改变图片
+            childViewHolder.mTextView.setText("  "+bean.get(childPosition).getLikes_count());
+//                改变文字
             return view;
         }
 
         class ChildViewHolder {
             @BindView(R.id.iv_child_show)
             ImageView mImageView;
-
+            @BindView(R.id.tv_child_show)
+            TextView mTextView;
             public ChildViewHolder(View view) {
                 view.setTag(this);
                 ButterKnife.bind(this, view);
@@ -337,4 +458,9 @@ public class CullingFragment extends Fragment {
         }
     }
 
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
 }
