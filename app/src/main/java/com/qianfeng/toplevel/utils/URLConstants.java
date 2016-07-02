@@ -13,6 +13,10 @@ public class URLConstants {
 //          第二栏广告的数据
 
     public static final String URL_CULLING = "http://api.liwushuo.com/v2/channels/101/items?gender=1&limit=20&offset=0&generation=2";
-//    精选的条目
-
+    //    精选的条目
+    public static final String URL_START = "http://api.liwushuo.com/v2/channels/";
+//    这是海淘以及其他界面的url的头
+    public static final String URL_END = "/items?gender=1&limit=20&offset=0&generation=2";
+//  这是海淘以及其他界面的url的尾部
+//
 }

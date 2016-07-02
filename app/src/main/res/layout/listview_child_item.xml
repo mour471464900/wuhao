@@ -35,5 +35,16 @@
             android:drawableLeft="@drawable/ic_feed_favourite_normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/tv_child_jianjie"
+            android:textSize="15sp"
+            android:layout_gravity="bottom"
+            android:padding="10dp"
+            android:maxLines="1"
+            android:textStyle="bold"
+            android:textColor="#ffffff"
+            android:text="第40期"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </android.support.v7.widget.CardView>
 </RelativeLayout>

@@ -2,7 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_light"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragment.OtherFragment">
     <android.support.v4.widget.SwipeRefreshLayout
@@ -14,9 +13,4 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
     </android.support.v4.widget.SwipeRefreshLayout>
-    <TextView
-        android:layout_below="@+id/other_refresh_view"
-        android:text="这是其他的页面"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
 </RelativeLayout>

@@ -18,7 +18,6 @@ public class BannerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_banner);
         initData();
-//
     }
 
     private void initData() {

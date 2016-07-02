@@ -38,7 +38,8 @@ public class GuideFragment extends Fragment {
     private List<Fragment> fragmentList = new ArrayList<>();
     private List<String> titlsList = new ArrayList<>();
     private MyViewPager adapter;
-
+    private  List< ClassifyBean.DataEntity.ChannelsEntity > mlist=new ArrayList<>();
+//    分类对象的
     public  static   GuideFragment newInstace(Bundle args){
         GuideFragment fragment=new GuideFragment();
         fragment.setArguments(args);
@@ -70,7 +71,7 @@ public class GuideFragment extends Fragment {
                 Gson gson=new Gson();
                 ClassifyBean bean  =gson.fromJson(result, ClassifyBean.class);
                 ClassifyBean.DataEntity dataEntity=bean.getData();
-                List< ClassifyBean.DataEntity.ChannelsEntity > mlist=new ArrayList<>();
+                mlist=new ArrayList<>();
                 mlist.addAll(dataEntity.getChannels());
                 for (int i = 0; i <mlist.size() ; i++) {
                     String title = mlist.get(i).getName();
@@ -103,7 +104,9 @@ public class GuideFragment extends Fragment {
         fragmentList.add(fragment1);
 //        从第二个位置开始
         for (int i = 1; i <titlsList.size() ; i++) {
-            OtherFragment fragment=OtherFragment.newInstance(null);
+            Bundle bundle=new Bundle();
+            bundle.putInt("id",mlist.get(i).getId());
+            OtherFragment fragment=OtherFragment.newInstance(bundle);
             fragmentList.add(fragment);
         }
     }

@@ -13,10 +13,12 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.qianfeng.toplevel.fragment.ClassifyFragment;
 import com.qianfeng.toplevel.fragment.CullingFragment;
 import com.qianfeng.toplevel.fragment.GuideFragment;
 import com.qianfeng.toplevel.fragment.HotFragment;
 import com.qianfeng.toplevel.fragment.OtherFragment;
+import com.qianfeng.toplevel.fragment.UserFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,14 +114,12 @@ public class MainActivity extends AppCompatActivity {
     private void initFragment() {
         GuideFragment fragment1 = GuideFragment.newInstace(null);
         HotFragment fragment2 = HotFragment.newInstace(null);
-        OtherFragment fragment3 = OtherFragment.newInstance(null);
-        OtherFragment fragment4 = OtherFragment.newInstance(null);
-        OtherFragment fragment5 = OtherFragment.newInstance(null);
+        ClassifyFragment fragment3 = ClassifyFragment.newInstance(null);
+        UserFragment fragment4 = UserFragment.newInstance(null);
         fragmentList.add(fragment1);
         fragmentList.add(fragment2);
         fragmentList.add(fragment3);
         fragmentList.add(fragment4);
-        fragmentList.add(fragment5);
     }
 
     //    设置按两次返回键 退出的效果

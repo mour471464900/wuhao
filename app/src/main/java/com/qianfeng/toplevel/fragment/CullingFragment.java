@@ -438,6 +438,7 @@ public class CullingFragment extends Fragment {
 //               改变图片
             childViewHolder.mTextView.setText("  "+bean.get(childPosition).getLikes_count());
 //                改变文字
+            childViewHolder.getmTextView.setText(bean.get(childPosition).getTitle());
             return view;
         }
 
@@ -446,6 +447,8 @@ public class CullingFragment extends Fragment {
             ImageView mImageView;
             @BindView(R.id.tv_child_show)
             TextView mTextView;
+            @BindView(R.id.tv_child_jianjie)
+            TextView getmTextView;
             public ChildViewHolder(View view) {
                 view.setTag(this);
                 ButterKnife.bind(this, view);
