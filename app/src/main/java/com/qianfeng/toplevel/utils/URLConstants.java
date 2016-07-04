@@ -18,5 +18,16 @@ public class URLConstants {
 //    这是海淘以及其他界面的url的头
     public static final String URL_END = "/items?gender=1&limit=20&offset=0&generation=2";
 //  这是海淘以及其他界面的url的尾部
+
 //
+   public static  final  String DETAILS_START="http://api.liwushuo.com/v2/posts_v2/";
+    public static  final  String DETAILS_END="?show_baichuan=0";
+//    这是攻略详情的头 尾
+//    http://api.liwushuo.com/v2/posts_v2/1044314?show_baichuan=0
+//    得到点击事件的攻略详情页
+
+//    热门的url
+    public static final String URL_HOT="http://api.liwushuo.com/v2/items?gender=1&limit=20&offset=0&generation=2";
+
+
 }

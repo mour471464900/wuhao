@@ -25,7 +25,7 @@ public class CullingBean implements Serializable {
         this.data = data;
     }
 
-    public static class DataBean {
+    public static class DataBean implements  Serializable{
         /**
          * next_url : http://api.liwushuo.com/v2/channels/101/items?generation=2&gender=1&limit=20&offset=20
          */
@@ -58,13 +58,7 @@ public class CullingBean implements Serializable {
 
         private List<ItemsBean> items;
 
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "paging=" + paging +
-                    ", items=" + items +
-                    '}';
-        }
+
 
         public PagingBean getPaging() {
             return paging;
@@ -82,7 +76,7 @@ public class CullingBean implements Serializable {
             this.items = items;
         }
 
-        public static class PagingBean {
+        public static class PagingBean  implements Serializable{
             private String next_url;
 
             public String getNext_url() {
@@ -94,7 +88,7 @@ public class CullingBean implements Serializable {
             }
         }
 
-        public static class ItemsBean {
+        public static class ItemsBean implements Serializable{
             private int content_type;
             private String content_url;
             private String cover_image_url;

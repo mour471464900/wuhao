@@ -35,12 +35,6 @@ public class SecondAdvert {
 
         private List<SecondaryBannersBean> secondary_banners;
 
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "secondary_banners=" + secondary_banners +
-                    '}';
-        }
 
         public List<SecondaryBannersBean> getSecondary_banners() {
             return secondary_banners;

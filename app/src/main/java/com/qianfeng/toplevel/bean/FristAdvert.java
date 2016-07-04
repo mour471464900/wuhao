@@ -41,13 +41,6 @@ public class FristAdvert {
 
         private List<BannersBean> banners;
 
-        @Override
-        public String toString() {
-            return "DataBean{" +
-                    "banners=" + banners +
-                    '}';
-        }
-
         public List<BannersBean> getBanners() {
             return banners;
         }

@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
@@ -25,8 +26,13 @@ import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.Gson;
+import com.handmark.pulltorefresh.library.PullToRefreshBase;
+import com.handmark.pulltorefresh.library.PullToRefreshExpandableListView;
+import com.qianfeng.toplevel.OkUtils.IOKCallBack;
+import com.qianfeng.toplevel.OkUtils.OkHttpTool;
 import com.qianfeng.toplevel.R;
 import com.qianfeng.toplevel.activity.BannerActivity;
+import com.qianfeng.toplevel.activity.StrategyDetailsActivity;
 import com.qianfeng.toplevel.bean.CullingBean;
 import com.qianfeng.toplevel.bean.FristAdvert;
 import com.qianfeng.toplevel.bean.SecondAdvert;
@@ -52,7 +58,7 @@ public class CullingFragment extends Fragment {
 
     private View view;
     @BindView(R.id.expandLv_culling)
-    ExpandableListView mListView;
+    PullToRefreshExpandableListView mListView;
     //    头部的广告的
     private List<String> fristUrls;
     //    中部广告的
@@ -72,6 +78,8 @@ public class CullingFragment extends Fragment {
     private List<FristAdvert.DataBean.BannersBean> firstBanner;
     private List<SecondAdvert.DataBean.SecondaryBannersBean> secondList;
     private List<CullingBean.DataBean.ItemsBean> itemsBeanList = new ArrayList<>();
+    private ExpandableListView refreshableView;
+    private CullingBean advert;
 
 //    初始化广告牌
 
@@ -93,6 +101,7 @@ public class CullingFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_culling, container, false);
         ButterKnife.bind(this, view);
+        refreshableView = mListView.getRefreshableView();
         hearderView = inflater.inflate(R.layout.listview_culling_hearder, null);
 //        找到头部视图
         convenientBanner = (ConvenientBanner) hearderView.findViewById(R.id.cb_culling_top);
@@ -101,14 +110,32 @@ public class CullingFragment extends Fragment {
 //      初始化黄油刀的fragment
         initExpandListView();
 //        改变ExpandListView
-        mListView.addHeaderView(hearderView);
+        refreshableView.addHeaderView(hearderView);
 //        添加了
-        mListView.addHeaderView(hearder2);
+        refreshableView.addHeaderView(hearder2);
         initListener();
         return view;
     }
 
     private void initListener() {
+//        设置下拉加载更多的数据 ,实验失败先将这块代码注释
+//        mListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+//            @Override
+//            public void onLastItemVisible() {
+//                OkHttpTool.newInstance().start(advert.getData().
+//                        getPaging().getNext_url()).callback(new IOKCallBack() {
+//                    @Override
+//                    public void success(String result) {
+//                        Gson gson = new Gson();
+//                       CullingBean  advert = gson.fromJson(result, CullingBean.class);
+//                        CullingBean.DataBean data = advert.getData();
+//                        itemsBeanList.addAll(data.getItems());
+//                        setUpBottmBanner(itemsBeanList);
+//                        myRecylerAdapter.notifyDataSetChanged();
+//                    }
+//                });
+//            }
+//        });
 //        这是第一栏广告的鉴听事件
         convenientBanner.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -118,11 +145,16 @@ public class CullingFragment extends Fragment {
                 startActivity(intent);
             }
         });
-        mListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+//        这是每个条目的鉴听跳转到攻略详情页面的
+        refreshableView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id) {
                 String groupName = dates.get(groupPosition);
                 List<CullingBean.DataBean.ItemsBean> bean = map.get(groupName);
+                int item_id = bean.get(childPosition).getId();
+                Intent intent = new Intent(getActivity(), StrategyDetailsActivity.class);
+                intent.putExtra("item_id", item_id);
+                startActivity(intent);
                 return true;
             }
         });
@@ -159,7 +191,7 @@ public class CullingFragment extends Fragment {
 
                 myRecylerAdapter.notifyDataSetChanged();
                 //                                设置ExpandListView 点击不收缩
-                mListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+                refreshableView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
                     @Override
                     public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
                         return true;
@@ -167,7 +199,7 @@ public class CullingFragment extends Fragment {
                 });
 //        让每个组都展开
                 for (int i = 0; i < dates.size(); i++) {
-                    mListView.expandGroup(i);
+                    refreshableView.expandGroup(i);
                 }
             }
         });
@@ -199,6 +231,7 @@ public class CullingFragment extends Fragment {
                     try {
                         int position = Integer.parseInt(v.getTag().toString());
                         SecondAdvert.DataBean.SecondaryBannersBean secondaryBannersBean = secondList.get(position);
+                        secondaryBannersBean.getId();
                         Intent intent = new Intent(getActivity(), BannerActivity.class);
                         startActivity(intent);
                     } catch (NumberFormatException e) {
@@ -285,7 +318,7 @@ public class CullingFragment extends Fragment {
 
     //---------------------下面是expandListView 的适配器--------------------
     private void bindAdapter() {
-        mListView.setAdapter(adapter);
+        refreshableView.setAdapter(adapter);
     }
 
     private void initAdapter() {
@@ -293,29 +326,26 @@ public class CullingFragment extends Fragment {
     }
 
     private void initData() {
-
         if (dates != null && !dates.isEmpty()) {
             return;
         }
 //       这个if循环是为了解决，数据重复加载的问题
 //       解决viewpager的数据重载的问题
-
         HttpUtil.requestGet(URLConstants.URL_CULLING, new IRequestCallBack() {
             @Override
             public void onSuccess(String result) {
                 Gson gson = new Gson();
-                CullingBean advert = gson.fromJson(result, CullingBean.class);
+                advert = gson.fromJson(result, CullingBean.class);
                 CullingBean.DataBean data = advert.getData();
                 itemsBeanList.addAll(data.getItems());
-                setUpBottmBanner();
+                setUpBottmBanner(itemsBeanList);
                 myRecylerAdapter.notifyDataSetChanged();
             }
         });
-
     }
 
     //    通过对象的集合，生成一个map，对象
-    private void setUpBottmBanner() {
+    private void setUpBottmBanner(List<CullingBean.DataBean.ItemsBean> itemsBeanList) {
         List<CullingBean.DataBean.ItemsBean> list = new ArrayList<>();
 //        先重新new一集合
         list.add(itemsBeanList.get(0));
@@ -436,7 +466,7 @@ public class CullingFragment extends Fragment {
             Picasso.with(getActivity()).load(bean.get(childPosition).getCover_image_url()).
                     into(childViewHolder.mImageView);
 //               改变图片
-            childViewHolder.mTextView.setText("  "+bean.get(childPosition).getLikes_count());
+            childViewHolder.mTextView.setText("  " + bean.get(childPosition).getLikes_count());
 //                改变文字
             childViewHolder.getmTextView.setText(bean.get(childPosition).getTitle());
             return view;
@@ -449,6 +479,7 @@ public class CullingFragment extends Fragment {
             TextView mTextView;
             @BindView(R.id.tv_child_jianjie)
             TextView getmTextView;
+
             public ChildViewHolder(View view) {
                 view.setTag(this);
                 ButterKnife.bind(this, view);

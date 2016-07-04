@@ -43,6 +43,7 @@
             android:maxLines="1"
             android:textStyle="bold"
             android:textColor="#ffffff"
+            android:background="#66363636"
             android:text="第40期"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

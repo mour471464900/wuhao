@@ -1,13 +1,55 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.qianfeng.toplevel.fragment.ClassifyFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+  >
+<RelativeLayout
+    android:id="@+id/rl_top"
+    android:layout_width="match_parent"
+    android:background="@android:color/holo_red_light"
+    android:layout_height="wrap_content">
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tablayout_classify_top"
+        android:layout_width="120dp"
+        android:layout_centerHorizontal="true"
+        app:tabIndicatorHeight="2dp"
+        app:tabIndicatorColor="#ffffff"
+        app:tabTextColor="#ffffff"
+        app:tabSelectedTextColor="#ffffff"
+        android:layout_height="wrap_content"
+        android:fillViewport="false" />
     <TextView
+        android:text="选礼神器"
+        android:id="@+id/tv_classify_xuanli_shengqi"
+        android:textColor="@android:color/white"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</RelativeLayout>
+    <RelativeLayout
+        android:layout_below="@+id/rl_top"
+        android:id="@+id/rl_search"
+        android:layout_margin="10dp"
+        android:background="#66a8b6a8"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="这是分类的fragment" />
-
-</FrameLayout>
+        android:layout_height="25dp">
+        <TextView
+            android:id="@+id/tv_classify_search"
+            android:text="@string/hello_blank_fragment"
+            android:layout_centerInParent="true"
+            android:drawableLeft="@drawable/abc_ic_search"
+            android:textSize="10sp"
+            android:textColor="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_classify_bottom"
+        android:layout_below="@+id/rl_search"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
