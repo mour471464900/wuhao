@@ -96,8 +96,8 @@ public class ClassifyFragment extends Fragment {
         mFragmentList = new ArrayList<>();
         SingleProductFragment fragment1 = SingleProductFragment.newInstance(null);
         StrategyFragment fragment2 = StrategyFragment.newInstanceP(null);
-        mFragmentList.add(fragment1);
         mFragmentList.add(fragment2);
+        mFragmentList.add(fragment1);
     }
 
     private void initTitles() {

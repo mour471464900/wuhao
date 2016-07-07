@@ -4,7 +4,8 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- 照相机的功能权限 -->
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -29,11 +30,11 @@
         <activity
             android:name=".activity.StrategyDetailsActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name=".activity.PurchaseActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
-            />
-        <activity android:name=".activity.SearchActivity"
-           />
+        <activity
+            android:name=".activity.PurchaseActivity"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity android:name=".activity.SearchActivity" />
+        <activity android:name=".activity.ZbarActivity"></activity>
     </application>
 
 </manifest>
