@@ -19,10 +19,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.qianfeng.toplevel.OkUtils.IOKCallBack;
 import com.qianfeng.toplevel.OkUtils.OkHttpTool;
 import com.qianfeng.toplevel.R;
-import com.qianfeng.toplevel.activity.BannerActivity;
 import com.qianfeng.toplevel.activity.StrategyDetailsActivity;
 import com.qianfeng.toplevel.bean.CullingBean;
-import com.qianfeng.toplevel.bean.Hot;
 import com.qianfeng.toplevel.utils.URLConstants;
 import com.squareup.picasso.Picasso;
 

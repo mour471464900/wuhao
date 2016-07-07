@@ -9,11 +9,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.HorizontalScrollView;
@@ -26,12 +24,9 @@ import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bigkoo.convenientbanner.holder.Holder;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.Gson;
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshExpandableListView;
-import com.qianfeng.toplevel.OkUtils.IOKCallBack;
-import com.qianfeng.toplevel.OkUtils.OkHttpTool;
 import com.qianfeng.toplevel.R;
-import com.qianfeng.toplevel.activity.BannerActivity;
+import com.qianfeng.toplevel.activity.BannerListActivity;
 import com.qianfeng.toplevel.activity.StrategyDetailsActivity;
 import com.qianfeng.toplevel.bean.CullingBean;
 import com.qianfeng.toplevel.bean.FristAdvert;
@@ -79,6 +74,7 @@ public class CullingFragment extends Fragment {
     private List<SecondAdvert.DataBean.SecondaryBannersBean> secondList;
     private List<CullingBean.DataBean.ItemsBean> itemsBeanList = new ArrayList<>();
     private ExpandableListView refreshableView;
+
     private CullingBean advert;
 
 //    初始化广告牌
@@ -141,7 +137,8 @@ public class CullingFragment extends Fragment {
             @Override
             public void onItemClick(int position) {
                 FristAdvert.DataBean.BannersBean bannersBean = firstBanner.get(position);
-                Intent intent = new Intent(getActivity(), BannerActivity.class);
+                Intent intent = new Intent(getActivity(), BannerListActivity.class);
+                intent.putExtra("id",bannersBean.getTarget_id());
                 startActivity(intent);
             }
         });
@@ -231,8 +228,8 @@ public class CullingFragment extends Fragment {
                     try {
                         int position = Integer.parseInt(v.getTag().toString());
                         SecondAdvert.DataBean.SecondaryBannersBean secondaryBannersBean = secondList.get(position);
-                        secondaryBannersBean.getId();
-                        Intent intent = new Intent(getActivity(), BannerActivity.class);
+                        Intent intent = new Intent(getActivity(),StrategyDetailsActivity.class);
+                       intent.putExtra("item_id",secondaryBannersBean.getId());
                         startActivity(intent);
                     } catch (NumberFormatException e) {
                         e.printStackTrace();
@@ -291,8 +288,8 @@ public class CullingFragment extends Fragment {
 //                这个urls 是图片的地址的集合
                 //设置需要切换的View
                 .setPointViewVisible(true)    //设置指示器是否可见
-                .setPageIndicator(new int[]{R.drawable.btn_check_disabled,
-                        R.drawable.btn_check_disabled_nightmode})   //设置指示器圆点
+                .setPageIndicator(new int[]{R.drawable.feature_point,
+                        R.drawable.feature_point_cur})   //设置指示器圆点
                 .startTurning(3000)     //设置自动切换（同时设置了切换时间间隔）
                 .setPageIndicatorAlign(ConvenientBanner.PageIndicatorAlign.CENTER_HORIZONTAL); //设置指示器位置（左、中、右）
     }
@@ -441,7 +438,6 @@ public class CullingFragment extends Fragment {
         class GroupViewHolder {
             @BindView(R.id.tv_group_left)
             TextView mLeftTxt;
-
             public GroupViewHolder(View view) {
                 view.setTag(this);
                 ButterKnife.bind(this, view);
@@ -488,7 +484,8 @@ public class CullingFragment extends Fragment {
 
         @Override
         public boolean isChildSelectable(int groupPosition, int childPosition) {
-            return false;
+            return true;
+//            这是expandelistview的，子类点击是否有效的意思
         }
     }
 

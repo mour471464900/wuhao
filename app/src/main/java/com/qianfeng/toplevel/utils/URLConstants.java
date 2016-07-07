@@ -29,5 +29,13 @@ public class URLConstants {
 //    热门的url
     public static final String URL_HOT="http://api.liwushuo.com/v2/items?gender=1&limit=20&offset=0&generation=2";
 
+//    这是第一栏广告的点击事件
+    public static final String BANNER_START="http://api.liwushuo.com/v2/collections/";
+    public static final String BANNER_END="/posts?limit=20&offset=01";
+
+//    http://api.liwushuo.com/v2/collections/323/posts?limit=20&offset=01
+
+    public static final String URL_SINGLE="http://api.liwushuo.com/v2/item_categories/tree";
+//这是分类里面的那个单品的fragment的url
 
 }

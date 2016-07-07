@@ -31,8 +31,7 @@ public class StrategyDetailsActivity extends AppCompatActivity {
     TextView tv_share;
     @BindView(R.id.tv_strategy_details_comment)
     TextView tv_comment;
-    @BindView(R.id.iv_strategy_details)
-    ImageView imageView;
+
     private int item_id;
 
 
@@ -68,7 +67,7 @@ public class StrategyDetailsActivity extends AppCompatActivity {
 
     private void setupUI(StrategyDetailsBean.DataBean dataBean) {
         String cover_image_url = dataBean.getCover_image_url();
-        String content_url = dataBean.getContent_url();
+        String content_url = dataBean.getUrl();
         int comments_count = dataBean.getComments_count();
         int shares_count = dataBean.getShares_count();
         int likes_count = dataBean.getLikes_count();
@@ -81,9 +80,9 @@ public class StrategyDetailsActivity extends AppCompatActivity {
                 return true;
             }
         });
+        webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl(content_url);
 //        改变webview的内容
-        Picasso.with(this).load(cover_image_url).into(imageView);
 //       改变图片
         tv_comment.setText(""+comments_count);
         tv_share.setText(""+shares_count);

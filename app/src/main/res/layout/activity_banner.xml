@@ -1,13 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-  >
-  <TextView
+    android:orientation="vertical"
+    android:layout_height="match_parent">
 
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:text="这是广告内容页面"
-      />
-</RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/rl_banner_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_red_light"
+        android:padding="10dp">
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:onClick="BannerBackMain"
+            android:scaleType="fitXY"
+            android:src="@drawable/menu_action_back" />
+
+        <TextView
+            android:id="@+id/tv_banner_title_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="生活的星尚"
+            android:textColor="#ffffff"
+            android:textSize="20sp" />
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_menu_share" />
+    </RelativeLayout>
+
+    <com.handmark.pulltorefresh.library.PullToRefreshListView
+        android:id="@+id/lv_banner_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

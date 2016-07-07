@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class ClassifyBean implements Serializable {
 
+
     /**
      * code : 200
      * data : {"candidates":[{"editable":true,"name":"海淘","id":129},{"editable":true,"name":"送女票","id":10},{"editable":true,"name":"创意生活","id":125},{"editable":true,"name":"送基友","id":26},{"editable":true,"name":"送爸妈","id":6},{"editable":true,"name":"送同事","id":17},{"editable":true,"name":"送宝贝","id":24},{"editable":true,"name":"设计感","id":127},{"editable":true,"name":"文艺风","id":14},{"editable":true,"name":"奇葩搞怪","id":126},{"editable":true,"name":"科技范","id":28},{"editable":true,"name":"萌萌哒","id":11}],"channels":[{"editable":false,"name":"精选","id":101},{"editable":true,"name":"海淘","id":129},{"editable":true,"name":"送女票","id":10},{"editable":true,"name":"创意生活","id":125},{"editable":true,"name":"送基友","id":26},{"editable":true,"name":"送爸妈","id":6},{"editable":true,"name":"送同事","id":17},{"editable":true,"name":"送宝贝","id":24},{"editable":true,"name":"设计感","id":127},{"editable":true,"name":"文艺风","id":14},{"editable":true,"name":"奇葩搞怪","id":126},{"editable":true,"name":"科技范","id":28},{"editable":true,"name":"萌萌哒","id":11}]}
