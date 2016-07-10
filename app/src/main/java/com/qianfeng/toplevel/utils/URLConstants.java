@@ -38,4 +38,12 @@ public class URLConstants {
     public static final String URL_SINGLE="http://api.liwushuo.com/v2/item_categories/tree";
 //这是分类里面的那个单品的fragment的url
 
+
+    public static final String  STRATEGY_TOP="http://api.liwushuo.com/v2/columns?limit=20&offset=0";
+//  分类里面的攻略fragment上面栏目的url
+//    http://api.liwushuo.com/v2/columns?limit=20&offset=0
+
+    public static final String STRATEGY_BOTTOM="http://api.liwushuo.com/v2/channel_groups/all";
+//    分类里面的攻略fragment和，品类，风格，以及对象的url
+//   http://api.liwushuo.com/v2/channel_groups/all
 }

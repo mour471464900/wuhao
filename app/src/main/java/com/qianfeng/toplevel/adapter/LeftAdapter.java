@@ -35,7 +35,7 @@ public class LeftAdapter extends CommonAdapter<SingleProductBean.DataBean.Catego
         textView = (TextView) holderM.getView(R.id.tv_item_sing_left_name);
         textView.setText(bean.getName());
 //        获取红色滑动条的位置
-        textView.setTag(holderM.getPosition());
-        redView.setTag(holderM.getPosition());
+        textView.setTag(-1);
+        redView.setTag(-1);
     }
 }

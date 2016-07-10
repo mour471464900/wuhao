@@ -8,17 +8,22 @@
     <ListView
         android:id="@+id/lv_sing_left_show_name"
         android:layout_width="0dp"
+        android:scrollbars="none"
+        android:listSelector="@drawable/seletor_lv_choice"
+        android:background="#66a8b6a8"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:divider="#00000000"
         android:dividerHeight="0dip"
-        android:listSelector="@android:color/transparent" />
+     />
 
     <ExpandableListView
         android:id="@+id/expand_listview_right_show"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3"
+        android:groupIndicator="@null"
         android:divider="#00000000"
+        android:scrollbars="none"
         android:dividerHeight="0dip" />
 </LinearLayout>

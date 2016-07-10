@@ -4,6 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.GridView;
 
+import com.qianfeng.toplevel.fragment.StrategyFragment;
+
 /**
  * Created by hao on 2016/7/8.
  * 自定义gridview
@@ -27,4 +29,6 @@ public class CustomGridView extends GridView {
                 MeasureSpec.makeMeasureSpec(Integer.MAX_VALUE>>2,MeasureSpec.AT_MOST));
 //        要GridView完全展开，取消它的滚动条
     }
+
+
 }

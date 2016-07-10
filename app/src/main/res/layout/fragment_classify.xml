@@ -18,6 +18,7 @@
         app:tabIndicatorHeight="2dp"
         app:tabIndicatorColor="#ffffff"
         app:tabTextColor="#ffffff"
+        android:paddingBottom="5dp"
         app:tabSelectedTextColor="#ffffff"
         android:layout_height="wrap_content"
         android:fillViewport="false" />

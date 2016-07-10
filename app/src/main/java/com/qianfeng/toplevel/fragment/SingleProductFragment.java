@@ -1,12 +1,16 @@
 package com.qianfeng.toplevel.fragment;
 
+import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
@@ -27,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,16 +45,15 @@ public class SingleProductFragment extends Fragment {
     ListView mListView;
     @BindView(R.id.expand_listview_right_show)
     ExpandableListView mExpandableListView;
-
     private List<SingleProductBean.DataBean.CategoriesBean> cbList;
     private LeftAdapter leftAdapter;
-
     private Map<String,
             List<SingleProductBean.DataBean.CategoriesBean.SubcategoriesBean>> map;
     //    这是expandlistview的map集合
     private List<String> titles;
     private RightListAdapter rightListAdapter;
     private RightGridViewAdapter rightGridViewAdapter;
+    private ProgressDialog dialog;
 
     //
     public static SingleProductFragment newInstance(Bundle args) {
@@ -63,10 +67,9 @@ public class SingleProductFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_single_product, container, false);
         ButterKnife.bind(this, view);
-
-//        初始化数据
+//        黄油刀初始化
         initData();
-//
+//        初始化数据
         setupListView();
 //        设置listview
         setupExpandableListView();
@@ -76,18 +79,24 @@ public class SingleProductFragment extends Fragment {
 
     private void initData() {
         cbList = new ArrayList<>();
+        dialog = new ProgressDialog(getActivity());
+        dialog.setMessage("吐血加载中~~~");
+        dialog.show();
         OkHttpTool.newInstance().start(URLConstants.URL_SINGLE).callback(new IOKCallBack() {
             @Override
             public void success(String result) {
                 Gson gson = new Gson();
                 SingleProductBean singleProductBean = gson.fromJson(result, SingleProductBean.class);
-                cbList.addAll(singleProductBean.getData().getCategories());
-                leftAdapter.notifyDataSetChanged();
-                rightListAdapter.notifyDataSetChanged();
-                initMap(cbList);
+                if (singleProductBean != null && singleProductBean.getData() != null) {  //空指针判断
+                    cbList.addAll(singleProductBean.getData().getCategories());
+                    leftAdapter.notifyDataSetChanged();
+                    rightListAdapter.notifyDataSetChanged();
+                    initMap(cbList);
 //                初始化map数据
-                spreadExpandableView();
+                    dialog.dismiss();//  弹窗消失
+                    spreadExpandableView();
 //                展开expandablelistview
+                }
             }
         });
     }
@@ -116,11 +125,11 @@ public class SingleProductFragment extends Fragment {
             childList.addAll(mList.get(i).getSubcategories());
             map.put(mList.get(i).getName(), childList);
         }
-
-
     }
 
     private void setupListView() {
+//        mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
+////        实现单选模式
         initLeftAdapter();
 //        加载左边的适配器
         bindLeftAdapter();
@@ -130,8 +139,6 @@ public class SingleProductFragment extends Fragment {
     }
 
     private void initLeftListener() {
-        selectedListenerLeft();
-//        设置滑动监听
         clickListenerLeft();
 //        点击监听
     }
@@ -140,38 +147,12 @@ public class SingleProductFragment extends Fragment {
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                View redView = view.findViewById(R.id.view_tv_item_sing_left_cursor);
-                TextView textView = (TextView) view.findViewById(R.id.tv_item_sing_left_name);
-//                取得当前的item里面的view和文字
-                if (position == (Integer) redView.getTag()) {
-                    redView.setVisibility(View.VISIBLE);
-                    textView.setTextColor(Color.RED);
-                } else {
-                    redView.setVisibility(View.GONE);
-                    textView.setTextColor(Color.BLACK);
-                }
-            }
-        });
-    }
-
-    private void selectedListenerLeft() {
-        mListView.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                View redView = view.findViewById(R.id.view_tv_item_sing_left_cursor);
-                TextView textView = (TextView) view.findViewById(R.id.tv_item_sing_left_name);
-//                取得当前的item里面的view和文字
-                if (position == (Integer) redView.getTag()) {
-                    redView.setVisibility(View.VISIBLE);
-                    textView.setTextColor(Color.RED);
-                } else {
-                    redView.setVisibility(View.GONE);
-                    textView.setTextColor(Color.BLACK);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+                mExpandableListView.setSelectedGroup(position);
+//                当listview 点击到那个位置的时候，ExpandableListView联动到组名
+//                TextView textView = (TextView) view.findViewById(R.id.tv_item_sing_left_name);
+//                View redView = view.findViewById(R.id.view_tv_item_sing_left_cursor);
+//                textView.setTextColor(Color.RED);
+//                redView.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -183,6 +164,7 @@ public class SingleProductFragment extends Fragment {
     private void initLeftAdapter() {
         leftAdapter = new LeftAdapter(getActivity(),
                 R.layout.item_lv_sing_left_show_name, cbList);
+//        这个地方改使用，arrayAdapter的这样会比较好
     }
 
     private void setupExpandableListView() {
@@ -195,6 +177,29 @@ public class SingleProductFragment extends Fragment {
     }
 
     private void initRightListener() {
+        mExpandableListView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            private boolean flag;
+
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+//                判断当左边滑动的时候右边是不滑动的
+                if (scrollState != 0) {
+                    flag = true;
+                } else {
+                    flag = false;
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (flag) {
+                    mListView.setSelection(firstVisibleItem);
+//                     设置listview 的滑动到那个位置
+                    mListView.setItemChecked(firstVisibleItem, true);
+//                     设置listview 的滑动状态
+                }
+            }
+        });
 
     }
 
@@ -209,7 +214,6 @@ public class SingleProductFragment extends Fragment {
     //-------------------------这是expandlistview 的适配器----------------------------
     class RightListAdapter extends BaseExpandableListAdapter {
 
-
         //        返回分组 数目的长度
         @Override
         public int getGroupCount() {
@@ -222,7 +226,6 @@ public class SingleProductFragment extends Fragment {
             //   这是嵌套的GridView
             //  返回值必须为1，否则会重复数据
 //            因为只有一个子类就是GridView
-//
             return 1;
         }
 
@@ -234,17 +237,21 @@ public class SingleProductFragment extends Fragment {
 
         @Override
         public Object getChild(int groupPosition, int childPosition) {
-            return null;
+            String groupName = titles.get(groupPosition);
+            List<SingleProductBean.DataBean.CategoriesBean.SubcategoriesBean> bean
+                    = new ArrayList<>();
+            bean.addAll(map.get(groupName));
+            return bean.get(childPosition);
         }
 
         @Override
         public long getGroupId(int groupPosition) {
-            return 0;
+            return groupPosition;
         }
 
         @Override
         public long getChildId(int groupPosition, int childPosition) {
-            return 0;
+            return childPosition;
         }
 
         @Override
@@ -279,7 +286,7 @@ public class SingleProductFragment extends Fragment {
         }
 
         //     每一组的子 控件的适配器
-//       如何加载子控件的数据
+        //       如何加载子控件的数据
         @Override
         public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
             View view = convertView;
@@ -305,6 +312,7 @@ public class SingleProductFragment extends Fragment {
         class ChildViewHolder {
             @BindView(R.id.gv_expand_listview_show_picture)
             CustomGridView gridView;
+
             //        自定义的gridvIEW 解决嵌套在listview或者srcollview的之后不展开情况
             public ChildViewHolder(View view) {
                 view.setTag(this);
@@ -319,11 +327,9 @@ public class SingleProductFragment extends Fragment {
         }
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-
 
 }

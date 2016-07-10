@@ -18,7 +18,7 @@
             android:layout_gravity="center"
             android:id="@+id/tv_item_sing_left_name"
             android:layout_width="wrap_content"
-            android:textColor="@android:color/holo_red_light"
+            android:textColor="@android:color/black"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
             android:textStyle="bold"

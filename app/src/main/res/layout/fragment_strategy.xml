@@ -4,11 +4,12 @@
     android:layout_height="match_parent"
     android:background="#ffffff"
     tools:context="com.qianfeng.toplevel.fragment.StrategyFragment">
-
-
-    <TextView
+    <ExpandableListView
+        android:id="@+id/expand_listview_gonglv_yemian"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="这是攻略的页面" />
-
+        android:divider="#ffffff"
+        android:groupIndicator="@null"
+        android:scrollbars="none"
+        android:layout_height="match_parent">
+    </ExpandableListView>
 </LinearLayout>

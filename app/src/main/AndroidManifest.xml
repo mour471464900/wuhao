@@ -2,9 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.qianfeng.toplevel">
 
+    <!-- <uses-permission android:name="android.permission.READ_PHONE_STATE"/> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> -->
+    <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA" />
+
     <!-- 照相机的功能权限 -->
     <application
         android:allowBackup="true"
@@ -34,7 +37,9 @@
             android:name=".activity.PurchaseActivity"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
         <activity android:name=".activity.SearchActivity" />
-        <activity android:name=".activity.ZbarActivity"></activity>
+        <activity android:name=".activity.ZbarActivity" />
+        <activity android:name=".activity.CheckAllActivity" />
+        <activity android:name=".activity.CheckAllTopActivity"></activity>
     </application>
 
 </manifest>

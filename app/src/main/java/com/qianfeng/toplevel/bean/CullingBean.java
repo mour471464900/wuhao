@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Created by my on 2016/6/29.
+ * 这是精选的实体类
+ * 也是分类里面，的攻略分页的实体类
  */
 public class CullingBean implements Serializable {
 
