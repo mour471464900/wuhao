@@ -70,7 +70,6 @@ public class ClassifyFragment extends Fragment {
         mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
             }
 
             @Override
@@ -112,7 +111,7 @@ public class ClassifyFragment extends Fragment {
     }
 
     private void bindAdapter() {
-//      设置适配器
+       //      设置适配器
         mViewPager.setAdapter(viewPagerAdapter);
         //        关联viewpager
         mTabLayout.setupWithViewPager(mViewPager);

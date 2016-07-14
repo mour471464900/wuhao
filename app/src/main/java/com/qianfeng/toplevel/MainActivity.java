@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.rg_main)
     RadioGroup rgBottom;
-
     private List<Fragment> fragmentList = new ArrayList<>();
     private RadioButton[] rbChilds;
     private long exitTime;

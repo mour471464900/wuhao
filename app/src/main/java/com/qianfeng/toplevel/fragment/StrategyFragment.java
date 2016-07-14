@@ -26,6 +26,7 @@ import com.qianfeng.toplevel.OkUtils.OkHttpTool;
 import com.qianfeng.toplevel.R;
 import com.qianfeng.toplevel.activity.CheckAllActivity;
 import com.qianfeng.toplevel.activity.CheckAllTopActivity;
+import com.qianfeng.toplevel.activity.StrategyClickActivity;
 import com.qianfeng.toplevel.activity.StrategyDetailsActivity;
 import com.qianfeng.toplevel.adapter.BottomChildAdapter;
 import com.qianfeng.toplevel.adapter.ColumnAdapter;
@@ -97,13 +98,13 @@ public class StrategyFragment extends Fragment {
         initHeadListener();
     }
 
-//    这是栏目 旁边的 ，“查看全部”的点击监听
+    //    这是栏目 旁边的 ，“查看全部”的点击监听
     private void initHeadListener() {
         tv_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(getActivity(), CheckAllTopActivity.class);
-                intent.putExtra("bean",columnBean);
+                Intent intent = new Intent(getActivity(), CheckAllTopActivity.class);
+                intent.putExtra("bean", columnBean);
                 startActivity(intent);
             }
         });
@@ -114,7 +115,7 @@ public class StrategyFragment extends Fragment {
                 inflate(R.layout.item_expand_listview_gonglv_hearder, null);
         recyclerView = (RecyclerView) headView.findViewById(R.id.recycler_content_head_bottom);
 //        找到头部布局，以及里面的recyleview ,和上方查看全部的按钮
-         tv_button =(TextView)headView.findViewById(R.id.tv_chakan_head_button);
+        tv_button = (TextView) headView.findViewById(R.id.tv_chakan_head_button);
 //        这是查看全部的按钮
     }
 
@@ -124,7 +125,7 @@ public class StrategyFragment extends Fragment {
             @Override
             public void success(String result) {
                 Gson gson = new Gson();
-               columnBean = gson.fromJson(result, ColumnBean.class);
+                columnBean = gson.fromJson(result, ColumnBean.class);
                 List<ColumnBean.DataBean.ColumnsBean> list = new
                         ArrayList<ColumnBean.DataBean.ColumnsBean>();
                 list.addAll(columnBean.getData().getColumns());
@@ -277,13 +278,12 @@ public class StrategyFragment extends Fragment {
             bean.addAll(map.get(groupName));
             if (bean.size() <= 6) {
                 groupViewHolder.mRightText.setVisibility(View.GONE);
-            }else {
+            } else {
                 groupViewHolder.mRightText.setTag(groupPosition);
             }
             groupViewHolder.mLeftTxt.setText(titles.get(groupPosition));
             return view;
         }
-
 
         //       每一组  holder View
         class GroupViewHolder implements View.OnClickListener {
@@ -291,24 +291,26 @@ public class StrategyFragment extends Fragment {
             TextView mLeftTxt;
             @BindView(R.id.tv_chakan_button)
             TextView mRightText;
+
             public GroupViewHolder(View view) {
                 view.setTag(this);
                 ButterKnife.bind(this, view);
                 mRightText.setOnClickListener(this);
             }
-//          这是品类，风格，以及对象，右边“查看全部” 的点击监听
+
+            //          这是品类，风格，以及对象，右边“查看全部” 的点击监听
             @Override
             public void onClick(View v) {
-                   try{
-                       int position = Integer.parseInt(v.getTag().toString());
-                       Intent intent = new Intent(getActivity(),CheckAllActivity.class);
-                       StrategyBean.DataBean.ChannelGroupsBean channelGroupsBean = mList.get(position);
-                       intent.putExtra("bean",  channelGroupsBean);
+                try {
+                    int position = Integer.parseInt(v.getTag().toString());
+                    Intent intent = new Intent(getActivity(), CheckAllActivity.class);
+                    StrategyBean.DataBean.ChannelGroupsBean channelGroupsBean = mList.get(position);
+                    intent.putExtra("bean", channelGroupsBean);
 //                       将对象传过去
-                       startActivity(intent);
-                   }catch (NumberFormatException e){
-                       e.printStackTrace();
-                   }
+                    startActivity(intent);
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -329,7 +331,7 @@ public class StrategyFragment extends Fragment {
             List<StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean> bean
                     = new ArrayList<>();
             bean.addAll(map.get(groupName));
-            List<StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean> newList =
+            final List<StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean> newList =
                     new ArrayList<>();
             for (int i = 0; i < 6; i++) {
                 newList.add(bean.get(i));
@@ -339,13 +341,23 @@ public class StrategyFragment extends Fragment {
                     R.layout.item_expand_listview_gonglv_bottom_child, newList);
             childViewHolder.gridView.setAdapter(bottomChildAdapter);
             bottomChildAdapter.notifyDataSetChanged();
-
+//            给gridview的条目监听
+            childViewHolder.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(getActivity(), StrategyClickActivity.class);
+                    StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean channelsBean = newList.get(position);
+                    intent.putExtra("bean", channelsBean);
+                    startActivity(intent);
+                }
+            });
             return view;
         }
 
         class ChildViewHolder {
             @BindView(R.id.gv_content_bottom)
             CustomGridView gridView;
+
             public ChildViewHolder(View view) {
                 view.setTag(this);
                 ButterKnife.bind(this, view);

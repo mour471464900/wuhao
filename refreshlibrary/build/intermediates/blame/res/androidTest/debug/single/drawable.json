@@ -12,6 +12,10 @@
         "source": "D:\\buffer\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\indicator_bg_top.xml"
     },
     {
+        "merged": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\indicator_bg_top.xml",
+        "source": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\indicator_bg_top.xml"
+    },
+    {
         "merged": "E:\\workspace\\studiowork\\TopLevel1603\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\indicator_bg_bottom.xml",
         "source": "E:\\workspace\\studiowork\\TopLevel1603\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\indicator_bg_bottom.xml"
     },
@@ -30,5 +34,13 @@
     {
         "merged": "D:\\buffer\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\indicator_bg_bottom.xml",
         "source": "D:\\buffer\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\indicator_bg_bottom.xml"
+    },
+    {
+        "merged": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\box_anim_list.xml",
+        "source": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\box_anim_list.xml"
+    },
+    {
+        "merged": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable\\indicator_bg_bottom.xml",
+        "source": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable\\indicator_bg_bottom.xml"
     }
 ]

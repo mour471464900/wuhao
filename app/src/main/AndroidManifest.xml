@@ -39,7 +39,8 @@
         <activity android:name=".activity.SearchActivity" />
         <activity android:name=".activity.ZbarActivity" />
         <activity android:name=".activity.CheckAllActivity" />
-        <activity android:name=".activity.CheckAllTopActivity"></activity>
+        <activity android:name=".activity.CheckAllTopActivity" />
+        <activity android:name=".activity.StrategyClickActivity" />
     </application>
 
 </manifest>

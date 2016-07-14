@@ -46,4 +46,9 @@ public class URLConstants {
     public static final String STRATEGY_BOTTOM="http://api.liwushuo.com/v2/channel_groups/all";
 //    分类里面的攻略fragment和，品类，风格，以及对象的url
 //   http://api.liwushuo.com/v2/channel_groups/all
+
+    public static final String CLICK_START="http://api.liwushuo.com/v2/channels/";
+    public static final String CLICK_END="/items?limit=20&gender=1&offset=0&generation=2&order_by=now";
+//    这是，风格，对象，品类的url
+//http://api.liwushuo.com/v2/channels/111/items?limit=20&gender=1&offset=0&generation=2&order_by=now
 }

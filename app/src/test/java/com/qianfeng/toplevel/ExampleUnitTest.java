@@ -1,5 +1,8 @@
 package com.qianfeng.toplevel;
 
+import android.content.SyncStatusObserver;
+import android.widget.EditText;
+
 import com.google.gson.Gson;
 import com.qianfeng.toplevel.OkUtils.OkHttpTool;
 import com.qianfeng.toplevel.bean.BannerListBean;
@@ -21,6 +24,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 
 import static org.junit.Assert.*;
@@ -74,11 +78,24 @@ public class ExampleUnitTest {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd E");
         String date = sdf.format(new Date(time * 1000));
         return date;
+
     }
 
+    //   这是将毫秒转换成日期的方法
     @Test
-    public void postHttp() throws Exception {
+    public void returnDate() {
+SimpleDateFormat myFmt=new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
+        SimpleDateFormat myFmt1=new SimpleDateFormat("yy/MM/dd HH:mm");
+        SimpleDateFormat myFmt2=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//等价于now.toLocaleString()
+        SimpleDateFormat myFmt3=new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒 E ");
+        SimpleDateFormat myFmt4=new SimpleDateFormat(
+                "一年中的第 D 天 一年中第w个星期 一月中第W个星期 在一天中k时 z时区");
+        SimpleDateFormat myFmt5=new SimpleDateFormat("EE" );
+        Date now=new Date(12976696*1000);
+       System.out.println(myFmt5.format(now));
 
+    }
+    public void postHttp() throws Exception {
         String s = HttpUtilNow.get(URLConstants.BANNER_START + 323 + URLConstants.BANNER_END);
         Gson gson = new Gson();
         BannerListBean bannerListBean = gson.fromJson(s, BannerListBean.class);
@@ -87,4 +104,7 @@ public class ExampleUnitTest {
         System.out.println(itemsBeanList);
     }
 
+   public  void  text() throws Exception{
+
+   }
 }

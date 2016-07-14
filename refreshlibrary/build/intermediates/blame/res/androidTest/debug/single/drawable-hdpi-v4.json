@@ -32,7 +32,19 @@
         "source": "D:\\buffer\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\indicator_arrow.png"
     },
     {
+        "merged": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\default_ptr_flip.png",
+        "source": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\default_ptr_flip.png"
+    },
+    {
         "merged": "E:\\workspace\\studiowork\\TopLevel1603\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\default_ptr_rotate.png",
         "source": "E:\\workspace\\studiowork\\TopLevel1603\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\default_ptr_rotate.png"
+    },
+    {
+        "merged": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\default_ptr_rotate.png",
+        "source": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\default_ptr_rotate.png"
+    },
+    {
+        "merged": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\res\\merged\\androidTest\\debug\\drawable-hdpi-v4\\indicator_arrow.png",
+        "source": "D:\\back-up\\TopLevel\\refreshlibrary\\build\\intermediates\\bundles\\debug\\res\\drawable-hdpi-v4\\indicator_arrow.png"
     }
 ]

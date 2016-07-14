@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.TextView;
 
 import com.handmark.pulltorefresh.library.PullToRefreshGridView;
@@ -66,7 +67,16 @@ public class CheckAllActivity extends AppCompatActivity {
     }
 
     private void initLister() {
-
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(CheckAllActivity.this, StrategyClickActivity.class);
+                StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean channelsBean =
+                        channelGroupsBean.getChannels().get(position);
+                intent.putExtra("bean", channelsBean);
+                startActivity(intent);
+            }
+        });
     }
 
     //    返回键

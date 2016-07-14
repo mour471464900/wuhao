@@ -1,16 +1,14 @@
-package com.qianfeng.toplevel.fragment;
+package com.qianfeng.toplevel.activity;
 
-import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
@@ -19,8 +17,8 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.qianfeng.toplevel.OkUtils.IOKCallBack;
 import com.qianfeng.toplevel.OkUtils.OkHttpTool;
 import com.qianfeng.toplevel.R;
-import com.qianfeng.toplevel.activity.StrategyDetailsActivity;
 import com.qianfeng.toplevel.bean.CullingBean;
+import com.qianfeng.toplevel.bean.StrategyBean;
 import com.qianfeng.toplevel.utils.URLConstants;
 import com.squareup.picasso.Picasso;
 
@@ -31,65 +29,80 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * 这是页面的Fragment
+ * 这个是分类里面的
+ * 攻略里面的 （品类，风格，对象）条目，点击之后的页面
+ * 呈现一个出海淘，等页面的效果
  */
-public class OtherFragment extends Fragment {
-
-    private int id;
-    //   得到网址的id
-    @BindView(R.id.other_refresh_listview)
+public class StrategyClickActivity extends AppCompatActivity {
+    @BindView(R.id.lv_click_content)
     PullToRefreshListView mListView;
-    private List<CullingBean.DataBean.ItemsBean> itemsBeanList;
-    private ListView listView;
-    private OtherAdapter otherAdapter;
+    @BindView(R.id.tv_click_title)
+    TextView title;
+    private StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean channelsBean;
+    private int id;
     private CullingBean cullingBean;
-
-    public static OtherFragment newInstance(Bundle args) {
-        OtherFragment fragment = new OtherFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private List<CullingBean.DataBean.ItemsBean> itemsBeanList;
+    private OtherAdapter otherAdapter;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        Bundle bundle = getArguments();
-        id = bundle.getInt("id");
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_other, container, false);
-        ButterKnife.bind(this, view);
-//        执行recyleview的加载
-        setupRecylerView();
-        return view;
-    }
-
-    private void setupRecylerView() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_strategy_clickctivityt);
+        ButterKnife.bind(this);
         setupListView();
-//        设置listview的属性
-        initData();
-//        准备数据源
-        initAdapter();
-//        初始化适配器
-        bindAdapter();
-//        绑定适配器
-        initListener();
-//        设置监听
     }
 
     private void setupListView() {
-        mListView.setMode(PullToRefreshBase.Mode.BOTH);
-//        上啦和下拉都有作用
-        listView = mListView.getRefreshableView();
-//        设置下拉加载
-        itemsBeanList = new ArrayList<>();
+        initData();
+//         初始化数据
+        initAdapter();
+//         初始化适配 器
+        bindAdapter();
+//        绑定适配器
+        initLister();
+//         对gridview进行监听
     }
 
-    private void initListener() {
-//          设置下拉刷新
+    private void initData() {
+        Intent intent = getIntent();
+        if (intent.getSerializableExtra("bean") != null) {
+            channelsBean =
+                    (StrategyBean.DataBean.ChannelGroupsBean.ChannelsBean)
+                            intent.getSerializableExtra("bean");
+            title.setText(channelsBean.getName()); // 设置标题
+            id = channelsBean.getId();   // 得到id
+        }
+        initListViewData();
+    }
+
+    /**
+     * 异步任务取得
+     * 设置listview 的数据
+     */
+    private void initListViewData() {
+        itemsBeanList=new ArrayList<>();
+        OkHttpTool.newInstance().start(URLConstants.CLICK_START+id+URLConstants.CLICK_END)
+                .callback(new IOKCallBack() {
+            @Override
+            public void success(String result) {
+                Gson gson=new Gson();
+                cullingBean = gson.fromJson(result, CullingBean.class);
+                itemsBeanList.addAll(cullingBean.getData().getItems());
+                otherAdapter.notifyDataSetChanged();
+            }
+        });
+    }
+
+    private void initAdapter() {
+        otherAdapter = new OtherAdapter();
+    }
+
+    private void bindAdapter() {
+       mListView.setAdapter(otherAdapter);
+    }
+
+    private void initLister() {
+        //          设置下拉刷新
         mListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
             @Override
             public void onLastItemVisible() {
@@ -113,34 +126,24 @@ public class OtherFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 int item_id=itemsBeanList.get(position-1).getId();
-                Intent intent=new Intent(getActivity(), StrategyDetailsActivity.class);
+                Intent intent=new Intent(StrategyClickActivity.this, StrategyDetailsActivity.class);
                 intent.putExtra("item_id",item_id);
                 startActivity(intent);
             }
         });
     }
 
-
-    private void initData() {
-        OkHttpTool.newInstance().start(URLConstants.URL_START + id + URLConstants.URL_END)
-                .callback(new IOKCallBack() {
-                    @Override
-                    public void success(String result) {
-                        Gson gson = new Gson();
-                    cullingBean = gson.fromJson(result, CullingBean.class);
-                        itemsBeanList.addAll(cullingBean.getData().getItems());
-                        otherAdapter.notifyDataSetChanged();
-                    }
-                });
+    //    返回键
+    public void backMain(View view) {
+        finish();
     }
 
-    private void initAdapter() {
-        otherAdapter = new OtherAdapter();
+//    弹窗的PopupWindow的显示
+    public void PopupWindow(View view) {
+
+
     }
 
-    private void bindAdapter() {
-        listView.setAdapter(otherAdapter);
-    }
 
     class OtherAdapter extends BaseAdapter {
 
@@ -163,7 +166,7 @@ public class OtherFragment extends Fragment {
         public View getView(int position, View convertView, ViewGroup parent) {
             ViewHolder viewHolder;
             if (convertView == null) {
-                convertView = LayoutInflater.from(getActivity()).
+                convertView = LayoutInflater.from(StrategyClickActivity.this).
                         inflate(R.layout.listview_child_item, null);
                 viewHolder = new ViewHolder();
                 viewHolder.imageView =
@@ -176,7 +179,8 @@ public class OtherFragment extends Fragment {
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
-            Picasso.with(getActivity()).load(itemsBeanList.get(position).getCover_image_url())
+            Picasso.with(StrategyClickActivity.this).
+                    load(itemsBeanList.get(position).getCover_image_url())
                     .into(viewHolder.imageView);
             viewHolder.mTextView.setText("  " + itemsBeanList.get(position).getLikes_count());
             viewHolder.getmTextView.setText(itemsBeanList.get(position).getTitle());
@@ -189,4 +193,5 @@ public class OtherFragment extends Fragment {
         TextView mTextView;
         TextView getmTextView;
     }
+
 }
